@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            {% for main in order %}
+                <div class="card mb-3">
+                    <div class="card-header">Order id: 0000000000{{ main.id }} <span class="float-right">Order date: {{ main.ordered_date.date }}</span></div>
+                    <div class="card-body">
+                        {% for o in main.items.all %}
+                            <div class="col-lg-12">
+
+                                <div class="card border-0 mb-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-1"><h6 class="text-muted">{{ forloop.counter }}</h6></div>
+                                            <div class="col-lg-1">
+                                                <img src="{{ o.item.image.url }}" alt="" class="card-img-top">
+
+                                            </div>
+                                            <div class="col-lg-10">
+                                                <h6>{{ o.item.title }}</h6>
+                                                <p class="mb-0">
+                                                    {% if o.item.discount_price %}
+                                                        <del><span class="small">₹{{ o.get_total_price }}</span></del>
+                                                        <span class="small">₹{{ o.get_total_discount_price }}</span>
+                                                        <span class="text-success">₹{{ o.get_total_saving_amount }}</span>
+                                                    {% else %}
+                                                        <span class="small font-weight-bold">₹{{ o.get_total_price }}</span>
+                                                    {% endif %}
+                                                </p>
+                                                Qty:<span>{{ o.qty }}</span>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

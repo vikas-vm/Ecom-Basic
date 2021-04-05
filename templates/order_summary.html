@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+    <div class="row">
+    <div class="col-lg-7">
+        {% for o in order.items.all %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <img src="{{ o.item.image.url }}" alt="" class="card-img-top">
+                        <a href="{% url 'store:remove-from-cart' o.item.slug %}" class="btn btn-sm btn-danger">-</a>
+                        <span>{{ o.qty }}</span>
+                        <a href="{% url 'store:add-to-cart' o.item.slug %}" class="btn btn-sm btn-success">+</a>
+                    </div>
+                    <div class="col-lg-9">
+                        <h2>{{ o.item.title }}</h2>
+                    <p>
+                        {% if o.item.discount_price %}
+                            <del><span class="small">₹{{ o.get_total_price }}</span></del>
+                        <span class="small">₹{{ o.get_total_discount_price }}</span>
+                            <span class="text-success">₹{{ o.get_total_saving_amount }}</span>
+                        {% else %}
+                            <span class="small font-weight-bold">₹{{ o.get_total_price }}</span>
+                        {% endif %}
+</p>
+
+                        <a href="{% url 'store:remove-item' o.item.slug %}" class="btn btn-danger"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+</svg></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="list-group">
+                    <li class="list-group-item active">Price Details</li>
+
+
+                    {% if order.coupon %}
+                        <li class="list-group-item bg-success text-white">Coupon Discount ({{ order.coupon.percentage }}%):
+                            <span class="float-right">₹{{ order.get_coupon_amount }}</span>
+                        </li>
+                    {% endif %}
+
+                    <li class="list-group-item">Total Amount: <span class="float-right">₹0000</span></li>
+                    <li class="list-group-item">Total Discount: <span class="float-right">₹0000</span></li>
+                    <li class="list-group-item">Total Saving: <span class="float-right">₹0000</span></li>
+                    <li class="list-group-item"><b>Payable Amount: <span class="float-right">₹{{ order.get_total }}</span></b></li>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+    {% if not order.coupon %}
+
+        <div class="card mt-1">
+            <div class="card-body">
+                <form action="{% url "store:add-coupon" %}" method="post" class="d-flex">
+                   {% csrf_token %}
+                    {{ form.code }}
+                    <input type="submit" class="btn btn-success">
+                </form>
+            </div>
+        </div>
+
+        {% endif %}
+    <div class="row mt-5">
+            <div class="col-lg-6">
+                <a href="" class="btn btn-warning btn-block">Continue Shopping</a>
+            </div>
+            <div class="col-lg-6">
+                 <a href="{% url 'store:checkout' %}" class="btn btn-success btn-block">Checkout</a>
+            </div>
+    </div>
+    </div>
+
+
+    </div>
+
+    </div>
+
+
+{% endblock %}
